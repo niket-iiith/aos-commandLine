@@ -1,7 +1,8 @@
 #include"prompt.h"
 #include"token.h"
-#include<limits>
+#include<limits.h>
 #include<unistd.h>
+#include<iostream>
 
 using namespace std;
 
@@ -15,8 +16,8 @@ string getPromptfromENV(string homeDir)
     }
 
     // get _system_name_ from system
-    char _system_name_[_POSIX_HOST_NAME_MAX+1];
-    if(gethostname(_system_name_, _POSIX_HOST_NAME_MAX) < 0){
+    char _system_name_[_SC_HOST_NAME_MAX+1];
+    if(gethostname(_system_name_, _SC_HOST_NAME_MAX) < 0){
         perror("gethostname");
         exit(EXIT_FAILURE);
     }
@@ -28,13 +29,13 @@ string getPromptfromENV(string homeDir)
         exit(EXIT_FAILURE);
     }
 
-    string currDir(_current_directory_);
+    string currDir = _current_directory_;
     if(currDir.find(homeDir) == 0){
         currDir.replace(0, homeDir.length(), "~");
     }
 
 
-    string prompt = string(_username_) + "@" + _system_name_ + ":" + _current_directory_ + ">";
+    string prompt = string(_username_) + "@" + _system_name_ + ":" + currDir + ">";
 
     return prompt;
 }

@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<iostream>
-#include<limits>
+#include<limits.h>
 #include<unistd.h>
 #include"prompt.h"
 #include"token.h"
@@ -9,6 +9,7 @@ using namespace std;
 
 int main(){
 
+    //get home directory
     char homeDir[PATH_MAX];
     if(getcwd(homeDir, PATH_MAX) == nullptr){
         cout<<"Can't access Home Directory\n";
