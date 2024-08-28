@@ -5,7 +5,6 @@
 
 using namespace std;
 
-string readCommands();
 vector<string> tokenize(string input);
 
 #endif

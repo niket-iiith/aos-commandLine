@@ -29,11 +29,11 @@ string getPromptfromENV(string homeDir)
         exit(EXIT_FAILURE);
     }
 
+    //replace home directory with "~"
     string currDir = _current_directory_;
     if(currDir.find(homeDir) == 0){
         currDir.replace(0, homeDir.length(), "~");
     }
-
 
     string prompt = string(_username_) + "@" + _system_name_ + ":" + currDir + ">";
 

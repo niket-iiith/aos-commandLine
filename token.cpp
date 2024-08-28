@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 vector<string> tokenize(string command_str)
 {
     vector<string> tokens;

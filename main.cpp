@@ -1,9 +1,13 @@
+#include"prompt.h"
+#include"token.h"
+#include"seperate.h"
+#include"special.h"
+#include"command.h"
+
 #include<stdio.h>
 #include<iostream>
 #include<limits.h>
 #include<unistd.h>
-#include"prompt.h"
-#include"token.h"
 
 using namespace std;
 
@@ -15,6 +19,8 @@ int main(){
         cout<<"Can't access Home Directory\n";
         exit(EXIT_FAILURE);
     }
+
+    setenv("HOME", homeDir, 1);
     
     while(true)
     {
@@ -27,8 +33,13 @@ int main(){
             exit(EXIT_SUCCESS);
         }
 
-        vector<string> tokens;
-        tokens = tokenize(command_str);
+        vector<string> commands;
+        commands = getCommands(command_str);
+
+        split_and_execute(commands);
+
+        // vector<string> tokens;
+        // tokens = tokenize(commands);
 
     }
 
