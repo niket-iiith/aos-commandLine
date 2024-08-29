@@ -10,6 +10,7 @@
 #include <time.h>
 #include <pwd.h>
 #include <grp.h>
+#include <sys/wait.h>
 
 #define PATH_MAX 1024
 
@@ -169,7 +170,27 @@ void handle_ls(vector<string> tokens){
 }
 
 void handle_system_commands(vector<string> tokens){
-    
+    int pid;
+    int status;
+
+    pid = fork();
+    if(pid < 0){
+        perror("fork()");
+        return;
+    }
+    else if(pid == 0)[
+        // child process executes the command
+        if(execvp(tokens[0], tokens) < 0){
+            perror("exec failed");
+            exit(EXIT_FAILURE);
+        }
+        else{
+            // parent process waits for the child process to complete
+            do{
+                waitpid(pid, &status, WUNTRACED);
+            } while(!WIFEXITED(status) && !WIFSIGNALED(status));
+        }
+    ]
 }
 
 
