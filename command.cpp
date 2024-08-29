@@ -1,6 +1,7 @@
 #include"command.h"
 #include"token.h"
 #include<string.h>
+#include<cstring>
 #include<iostream>
 #include<unistd.h>
 #include<dirent.h>
@@ -11,6 +12,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <sys/wait.h>
+#include<sys/types.h>
 
 #define PATH_MAX 1024
 
@@ -173,14 +175,18 @@ void handle_system_commands(vector<string> tokens){
     int pid;
     int status;
 
+    cout << tokens[0].c_str() << " " << *(char* const*)tokens.data() << endl;
     pid = fork();
+    char* argv[] = { "/usr/bin/ls", ".", NULL };
+    
     if(pid < 0){
         perror("fork()");
         return;
     }
-    else if(pid == 0)[
+    else if(pid == 0){
         // child process executes the command
-        if(execvp(tokens[0], tokens) < 0){
+        // if(execvp(tokens[0].c_str(), *(char* const**)tokens.data()) < 0){
+        if(execvp(argv[0], argv) < 0){
             perror("exec failed");
             exit(EXIT_FAILURE);
         }
@@ -190,7 +196,7 @@ void handle_system_commands(vector<string> tokens){
                 waitpid(pid, &status, WUNTRACED);
             } while(!WIFEXITED(status) && !WIFSIGNALED(status));
         }
-    ]
+    }
 }
 
 
