@@ -175,9 +175,14 @@ void handle_system_commands(vector<string> tokens){
     int pid;
     int status;
 
-    cout << tokens[0].c_str() << " " << *(char* const*)tokens.data() << endl;
-    pid = fork();
-    char* argv[] = { "/usr/bin/ls", ".", NULL };
+    pid = fork();    
+    vector<char*> c_args;
+
+    // Convert std::vector<std::string> to std::vector<char*> for execvp
+    for (const auto& token : tokens) {
+        c_args.push_back(const_cast<char*>(token.c_str()));
+    }
+    c_args.push_back(nullptr); // Null-terminate the array
     
     if(pid < 0){
         perror("fork()");
@@ -185,8 +190,7 @@ void handle_system_commands(vector<string> tokens){
     }
     else if(pid == 0){
         // child process executes the command
-        // if(execvp(tokens[0].c_str(), *(char* const**)tokens.data()) < 0){
-        if(execvp(argv[0], argv) < 0){
+        if(execvp(c_args[0], c_args.data()) < 0){
             perror("exec failed");
             exit(EXIT_FAILURE);
         }
