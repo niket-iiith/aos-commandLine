@@ -24,7 +24,7 @@ int main(){
     
     while(true)
     {
-        cout<<getPromptfromENV(homeDir);
+        cout<<getPrompt(homeDir);
 
         string command_str;
         getline(cin, command_str);

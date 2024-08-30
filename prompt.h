@@ -5,6 +5,6 @@
 using namespace std;
 
 //to display shell prompt
-string getPromptfromENV(string homeDir);
+string getPrompt(string homeDir);
 
 #endif

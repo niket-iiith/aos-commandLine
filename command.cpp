@@ -18,6 +18,11 @@
 
 using namespace std;
 
+
+
+
+
+
 void handle_echo(vector<string> tokens)
 {
     int n = tokens.size()-1;
@@ -31,6 +36,11 @@ void handle_echo(vector<string> tokens)
     }
     cout<<"\n";
 }
+
+
+
+
+
 
 void handle_cd(vector<string> tokens){
     char* homeDir = getenv("HOME");
@@ -79,6 +89,11 @@ void handle_cd(vector<string> tokens){
 
 }
 
+
+
+
+
+
 void handle_pwd(vector<string> tokens){
     char cwd[PATH_MAX];
 
@@ -95,6 +110,11 @@ void handle_pwd(vector<string> tokens){
     }
 }
 
+
+
+
+
+
 void print_permissions(struct stat *file_info)
 {
     printf( (S_ISDIR(file_info->st_mode)) ? "d" : "-");
@@ -108,6 +128,11 @@ void print_permissions(struct stat *file_info)
     printf( (file_info->st_mode & S_IWOTH) ? "w" : "-");
     printf( (file_info->st_mode & S_IXOTH) ? "x" : "-");
 }
+
+
+
+
+
 
 void handle_ls(vector<string> tokens){
     bool showHidden = false;
@@ -171,6 +196,11 @@ void handle_ls(vector<string> tokens){
     closedir(dp);
 }
 
+
+
+
+
+
 void handle_system_commands(vector<string> tokens){
     int pid;
     int status;
@@ -178,7 +208,7 @@ void handle_system_commands(vector<string> tokens){
     pid = fork();    
     vector<char*> c_args;
 
-    // Convert std::vector<std::string> to std::vector<char*> for execvp
+    // Convert vector<string> to vector<char*> for execvp
     for (const auto& token : tokens) {
         c_args.push_back(const_cast<char*>(token.c_str()));
     }
@@ -194,14 +224,20 @@ void handle_system_commands(vector<string> tokens){
             perror("exec failed");
             exit(EXIT_FAILURE);
         }
-        else{
-            // parent process waits for the child process to complete
-            do{
-                waitpid(pid, &status, WUNTRACED);
-            } while(!WIFEXITED(status) && !WIFSIGNALED(status));
-        }
     }
+    else{
+        // parent process waits for the child process to complete
+        do{
+            waitpid(pid, &status, WUNTRACED);
+        } while(!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
+
 }
+
+
+
+
+
 
 
 //called in special.cpp if there is no pipe or a background command
@@ -224,5 +260,4 @@ void handleCommand(string command)
         handle_ls(tokens);
     else    
         handle_system_commands(tokens);           //to execute non-built-in system commands
-
 }

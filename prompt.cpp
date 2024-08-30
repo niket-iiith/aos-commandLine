@@ -6,7 +6,7 @@
 
 using namespace std;
 
-string getPromptfromENV(string homeDir)
+string getPrompt(string homeDir)
 {
     // get _username_ from environment variable "USER"
     const char* _username_ = getenv("USER");
