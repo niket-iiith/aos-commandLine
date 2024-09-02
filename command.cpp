@@ -13,6 +13,7 @@
 #include <grp.h>
 #include <sys/wait.h>
 #include<sys/types.h>
+#include<fstream>
 
 #define PATH_MAX 1024
 
@@ -240,6 +241,43 @@ void handle_system_commands(vector<string> tokens){
 
 
 
+void handle_pinfo(vector<string> tokens){
+    string pid;
+
+    if(tokens.size() > 1) pid = tokens[1];
+    else pid = to_string(getpid());
+
+    string status = "/proc/" + pid + "/status";
+    string exe = "/proc/" + pid + "/exe";
+
+    //open status file to read process information
+    ifstream file(status);
+    
+    string data, state, vm;
+    
+    while(getline(file, data)){
+        if(data.find("State") == 0) state = data.substr(7);
+        else if(data.find("VmSize:") == 0) vm = data.substr(8);
+    }
+    file.close();
+
+    char exePath[1024];
+    int pathLen = readlink(exe.c_str(), exePath, sizeof(exePath)-1);
+    exePath[pathLen] = '\0';
+
+    cout<<"pid -- "<<pid<<endl;
+    cout<<"process status -- "<<state<<endl;
+    cout<<"memory -- "<<vm<<endl;
+    cout<<"executable path -- "<<exePath<<endl;
+
+}
+
+
+
+
+
+
+
 //called in special.cpp if there is no pipe or a background command
 void handleCommand(string command)
 {
@@ -258,6 +296,8 @@ void handleCommand(string command)
         handle_pwd(tokens);     
     else if(tokens[0] == "ls")                    //implement pwd command
         handle_ls(tokens);
+    else if(tokens[0] == "pinfo")                 //implement pinfo
+        handle_pinfo(tokens);
     else    
         handle_system_commands(tokens);           //to execute non-built-in system commands
 }
