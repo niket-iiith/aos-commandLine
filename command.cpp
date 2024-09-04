@@ -266,11 +266,65 @@ void handle_pinfo(vector<string> tokens){
     exePath[pathLen] = '\0';
 
     cout<<"pid -- "<<pid<<endl;
-    cout<<"process status -- "<<state<<endl;
+    cout<<"status -- "<<state<<endl;
     cout<<"memory -- "<<vm<<endl;
-    cout<<"executable path -- "<<exePath<<endl;
+    cout<<"path -- "<<exePath<<endl;
 
 }
+
+
+
+
+
+bool fileSearch(string path, string sFile)
+{
+    DIR* dir = opendir(path.c_str());
+    if(dir == nullptr){
+        perror("directory");
+        return false;
+    }
+
+    struct dirent* entry;
+    while((entry = readdir(dir)) != nullptr){
+        string name = entry->d_name;
+
+        if(name == "." || name == "..")
+            continue;
+
+        if(name == sFile){
+            closedir(dir);
+            return true;
+        }        
+
+        if (entry->d_type == DT_DIR) {
+            string new_path = path + "/" + name;
+            if (fileSearch(new_path, sFile)) {
+                closedir(dir);
+                return true;
+            }
+        }
+    }
+}
+
+
+
+void handle_search(vector<string> tokens)
+{
+    //if filename not provided or extra arguments are passed, return to prompt
+    if(tokens.size() != 2){
+        cout<<"error: syntax -- search <filename> " << endl;
+        return;
+    }
+
+    string sFile = tokens[1];
+    string _current_directory_ = ".";
+
+    if(fileSearch(_current_directory_, sFile)) cout << "True\n";
+    else cout << "False\n";
+
+}
+
+
 
 
 
@@ -298,6 +352,8 @@ void handleCommand(string command)
         handle_ls(tokens);
     else if(tokens[0] == "pinfo")                 //implement pinfo
         handle_pinfo(tokens);
+    else if(tokens[0] == "search")
+        handle_search(tokens);
     else    
         handle_system_commands(tokens);           //to execute non-built-in system commands
 }
